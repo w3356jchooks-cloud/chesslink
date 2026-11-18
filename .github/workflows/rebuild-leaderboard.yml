@@ -1,0 +1,36 @@
+name: Rebuild ChessLink leaderboard
+
+on:
+  push:
+    paths:
+      - "data/players.json"
+      - "data/matches.json"
+      - "scripts/build-leaderboard.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chesslink-leaderboard
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Build public leaderboard
+        run: node scripts/build-leaderboard.mjs
+      - name: Commit generated leaderboard
+        run: |
+          if git diff --quiet -- data/leaderboard.json; then
+            echo "Leaderboard unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/leaderboard.json
+          git commit -m "Update ChessLink leaderboard"
+          git push
