@@ -199,7 +199,8 @@ function setupConnection(c,isHost){
   }
   if(data.type==="state"&&!isHost)applyRemoteState(data);
   if(data.type==="error")setStatus(data.message||"The other player rejected that move.");
-  if(data.type==="chat")addChat(String(data.text||"").slice(0,300),false);\n  if(data.type==="profile"&&data.profile&&typeof data.profile.id==="string"){opponentProfile={id:data.profile.id,name:String(data.profile.name||"Opponent").slice(0,24)};}
+  if(data.type==="chat")addChat(String(data.text||"").slice(0,300),false);
+  if(data.type==="profile"&&data.profile&&typeof data.profile.id==="string"){opponentProfile={id:data.profile.id,name:String(data.profile.name||"Opponent").slice(0,24)};}
   if(data.type==="draw-offer"){drawPending=true;setStatus("Opponent offers a draw.");feature("Draw offer","<p>Your opponent offered a draw.</p><div class='actions'><button class='button primary' id='acceptDraw'>Accept draw</button><button class='button' id='declineDraw'>Decline</button></div>");$("acceptDraw").onclick=()=>{sendPacket({type:"draw-accept"});$("featureModal").classList.remove("show");endGame("Draw agreed.");};$("declineDraw").onclick=()=>{$("featureModal").classList.remove("show");sendPacket({type:"draw-decline"});setStatus("Draw offer declined.");};}
   if(data.type==="draw-accept")endGame("Draw agreed.");
   if(data.type==="draw-decline")setStatus("Opponent declined the draw.");
@@ -258,7 +259,8 @@ $("searchBtn").onclick=async()=>{const data=await getLeaderboard();const rows=(d
 document.querySelectorAll(".navitem").forEach(item=>item.addEventListener("click",()=>{document.querySelectorAll(".navitem").forEach(x=>x.classList.remove("active"));item.classList.add("active");const label=item.textContent.trim();if(label==="Play"){returnLive();return}if(label==="Puzzles")feature("Puzzles","<p>Chess puzzle training is coming next. Start by finding forcing checks, captures and threats.</p>");else if(label==="Learn")feature("Learn chess","<p><b>Castling:</b> move your king two squares toward a rook, then move the rook beside it. Neither piece may have moved, and the king cannot pass through check.</p><p><b>En passant:</b> capture an adjacent pawn immediately after it advances two squares.</p><p><b>Promotion:</b> a pawn reaching the far rank becomes a queen, rook, bishop or knight.</p>");else if(label==="More")feature("More","<p>GitHub hosts the public player data, match ledger and generated leaderboard. Live moves and chat stay peer-to-peer.</p><button class=button id=moreLeaderboard>Open leaderboard</button><button class=button id=exportMatches>Export pending match records</button>");else if(label==="Settings")$("boardSettings").click()}));
 
 $("featureContent").addEventListener("click",e=>{if(e.target.id==="moreLeaderboard")$("searchBtn").click();if(e.target.id==="exportMatches"){let pending=[];try{pending=JSON.parse(localStorage.getItem(MATCH_KEY)||"[]")}catch{}downloadJson("chesslink-match-submission.json",{version:1,matches:pending});}});
-\n$("flipBtnAlt").onclick=()=>$("flipBtn").click();$("newBtnAlt").onclick=()=>$("newBtn").click();
+
+$("flipBtnAlt").onclick=()=>$("flipBtn").click();$("newBtnAlt").onclick=()=>$("newBtn").click();
 
 
 </script>
