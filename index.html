@@ -154,7 +154,7 @@ function makeMove(move){
  }catch(e){console.error(e)}
 }
 function broadcastState(){if(conn?.open)conn.send({type:"state",fen:game.fen(),pgn:game.pgn(),lastMove,clocks:clockSeconds})}
-function applyRemoteState(data){try{game.load(data.fen);if(data.pgn){const replay=new Chess();replay.loadPgn(data.pgn); } if(data.clocks)clockSeconds=data.clocks;lastMove=data.lastMove||null;selected=null;legal=[];render();if(game.isGameOver())setStatus(gameOverText());else setStatus("Connected — "+(myColor==="w"?"you are White":"you are Black"))}catch(e){setStatus("Received an invalid game state; ignored.")}}
+function applyRemoteState(data){try{game.load(data.fen);if(data.pgn){const replay=new Chess();replay.loadPgn(data.pgn); } if(data.clocks)clockSeconds=data.clocks;lastMove=data.lastMove||null;selected=null;legal=[];render();paintClocks();if(game.isGameOver())endGame(gameOverText());else setStatus("Connected — "+(myColor==="w"?"you are White":"you are Black"))}catch(e){setStatus("Received an invalid game state; ignored.")}}
 function closeNetwork(){try{conn?.close();peer?.destroy()}catch{}conn=null;peer=null;connected=false;roomCode="";$("copyBtn").disabled=true}
 function setupConnection(c,isHost){
  conn=c;
