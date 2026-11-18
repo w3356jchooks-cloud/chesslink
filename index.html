@@ -41,7 +41,7 @@ body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;opa
    <aside class="moveside">
     <section class="gamehead">
      <div class="game-type"><span id="gameMode">RATED · BLITZ · 3 MIN</span> <span style="color:#9d8ce0">•</span> <span id="watching">1 watching</span></div>
-     <div class="game-sub" id="orientationLabel">White's view · Direct browser connection</div>
+     <div class="game-sub" id="orientationLabel">White's view · Direct browser connection</div><div class="game-sub" id="turnLabel">White to move</div>
      <div class="status" id="status" aria-live="polite">Create a room or join a friend's room to start.</div>
      <div class="actions"><button class="button primary" id="hostBtn">Create room</button><button class="button" id="copyBtn" disabled>Copy code</button></div><div class="actions"><button class="button" id="drawBtn">Offer draw</button><button class="button" id="resignBtn">Resign</button></div>
      <label class="muted" for="roomInput" style="display:block;margin-top:12px">JOIN WITH INVITE CODE</label>
@@ -57,6 +57,7 @@ body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;opa
   </main>
  </div>
 </div>
+<div class="modal" id="featureModal" role="dialog" aria-modal="true"><div class="modal-card feature-card"><button class="modal-close" id="closeFeature">✕</button><div id="featureContent"></div></div></div>
 <div class="modal" id="promotionModal" role="dialog" aria-modal="true" aria-label="Choose promotion"><div class="modal-card"><h2>Promote your pawn</h2><p class="muted">Choose the piece you want.</p><div class="promos" id="promoChoices"></div></div></div>
 
 <script>
@@ -95,6 +96,7 @@ function boardSquares(){
  return ranks.flatMap(rank=>cols.map(file=>({file,rank,sq:squareName(file,rank)})));
 }
 function render(){
+ if(viewingPly!==null){goPly(viewingPly);return;}
  const board=$("board"); board.innerHTML="";
  const legalTargets=new Set(legal.map(m=>m.to));
  for(const {file,rank,sq} of boardSquares()){
@@ -122,6 +124,7 @@ function render(){
 function gameOverText(){if(game.isCheckmate())return "Checkmate — "+(game.turn()==="w"?"Black":"White")+" wins";if(game.isStalemate())return "Draw — stalemate";if(game.isThreefoldRepetition())return "Draw — threefold repetition";if(game.isInsufficientMaterial())return "Draw — insufficient material";if(game.isDraw())return "Draw";return "Game over"}
 function canMove(){return role==="local"|| (role==="host"&&myColor==="w"&&game.turn()==="w")||(role==="guest"&&myColor==="b"&&game.turn()==="b")}
 function onSquare(sq){
+ if(viewingPly!==null)return;
  if(!canMove()||game.isGameOver())return;
  const piece=game.get(sq);
  if(selected){
@@ -163,7 +166,7 @@ function setupConnection(c,isHost){
  });
  c.on("data",data=>{
   if(!data||typeof data!=="object")return;
-  if(data.type==="hello"&&!isHost){try{game.load(data.fen);myColor="b";role="guest";flipped=true;render();setStatus("Joined successfully — you play Black.");}catch{setStatus("Host sent an invalid board state.")}}
+  if(data.type==="hello"&&!isHost){try{game.load(data.fen);if(data.clocks)clockSeconds=data.clocks;myColor="b";role="guest";flipped=true;startClock();render();paintClocks();setStatus("Joined successfully — you play Black.");}catch{setStatus("Host sent an invalid board state.")}}
   if(data.type==="move"&&isHost){
    try{const m=game.move(data.move);if(!m){c.send({type:"error",message:"That move is illegal."});return}lastMove={from:m.from,to:m.to};selected=null;legal=[];broadcastState();render();paintClocks();if(game.isGameOver())endGame(gameOverText())}catch{c.send({type:"error",message:"Invalid move."})}
   }
