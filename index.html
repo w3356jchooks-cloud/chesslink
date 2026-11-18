@@ -2,51 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827"><meta name="description" content="Play chess with a friend, peer-to-peer.">
+<meta name="theme-color" content="#6c27ed"><meta name="description" content="ChessLink — play chess peer-to-peer.">
 <title>ChessLink — Peer-to-peer chess</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#151d31;--panel2:#1c2941;--text:#edf2ff;--muted:#9aa9c4;--accent:#8b9cff;--light:#e8edf5;--dark:#64748b;--gold:#f7d774;--green:#62d6a5}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2850 0,#0b1020 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
-header{max-width:1120px;margin:auto;padding:26px 22px 12px;display:flex;align-items:center;justify-content:space-between;gap:16px}h1{font-size:clamp(25px,4vw,36px);margin:0;letter-spacing:-1px}.brand{display:flex;align-items:center;gap:12px}.logo{font-size:34px}.tag{color:var(--muted);font-size:13px}.wrap{max-width:1120px;margin:0 auto;padding:16px 22px 42px;display:grid;grid-template-columns:minmax(280px,660px) minmax(260px,1fr);gap:22px}
-.panel{background:linear-gradient(145deg,#18233aee,#111a2cee);border:1px solid #33415f;border-radius:18px;padding:17px;box-shadow:0 18px 55px #0004}.board-panel{padding:16px}.board-top,.board-bottom{display:flex;justify-content:space-between;align-items:center;padding:6px 2px;color:var(--muted);font-size:13px}.board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:5px solid #34415d;border-radius:8px;overflow:hidden;box-shadow:0 12px 35px #0006;touch-action:manipulation}.sq{border:0;border-radius:0;display:grid;place-items:center;padding:0;position:relative;cursor:pointer;font-family:serif;font-size:clamp(27px,6.5vw,62px);line-height:1}.sq.light{background:#e8edf5;color:#111827}.sq.dark{background:#64748b;color:#111827}.sq.selected{box-shadow:inset 0 0 0 5px #f7d774}.sq.last{background:#b7ad65}.sq.legal:after{content:"";position:absolute;width:24%;height:24%;border-radius:50%;background:#1d293d55}.sq.capture:after{width:82%;height:82%;background:transparent;border:5px solid #d65d5d99}.piece{filter:drop-shadow(0 2px 1px #0004);z-index:1}.sq .coord{position:absolute;left:3px;bottom:1px;font:10px system-ui;opacity:.7}.side{display:flex;flex-direction:column;gap:15px}.section-title{font-weight:700;margin:0 0 10px;font-size:16px}.actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #435477;background:#273653;color:var(--text);padding:10px 13px;border-radius:10px;font-weight:650;cursor:pointer}.button.primary{background:#7186ff;color:#0b1020;border-color:#9eacff}.button:disabled{opacity:.45;cursor:not-allowed}.field{display:flex;gap:8px;margin-top:10px}.field input{min-width:0;flex:1;background:#0d1526;color:var(--text);border:1px solid #3a4a6b;border-radius:9px;padding:10px;font:inherit}.status{padding:11px 12px;background:#0d172a;border:1px solid #344361;border-radius:10px;color:#dbe5ff}.status strong{color:var(--green)}.muted{color:var(--muted);font-size:13px}.moves{max-height:250px;overflow:auto;background:#0d1526;border-radius:10px;padding:10px;font:13px ui-monospace,monospace;color:#cbd7f0}.move-row{display:grid;grid-template-columns:28px 1fr 1fr;gap:8px;padding:3px 2px}.move-row:nth-child(odd){background:#ffffff08}.move-row .num{color:#7184a9}.divider{height:1px;background:#33415b;margin:13px 0}.notice{font-size:12px;color:#aebbd3;margin-top:10px}.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:20px;z-index:5}.modal.show{display:grid}.modal-card{background:#18243b;border:1px solid #506184;border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center}.promos{display:flex;justify-content:center;gap:10px;margin-top:15px}.promos button{font-size:38px;width:62px;height:62px;background:#273653;border:1px solid #506184;border-radius:10px;cursor:pointer;color:white}
-footer{max-width:1120px;margin:auto;padding:0 22px 28px;color:#7889a8;font-size:12px}
-@media(max-width:780px){.wrap{grid-template-columns:1fr;padding:12px 12px 30px;gap:14px}header{padding:20px 14px 8px}.panel{padding:12px}.board{border-width:3px}.sq{font-size:clamp(29px,10vw,54px)}}
+:root{color-scheme:dark;--ink:#f2edff;--muted:#a9a1bb;--app:#191722;--app2:#211e2c;--line:#353043;--orange:#efa449;--cream:#f0edda;--purple:#7027ed;--green:#68c99b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#6927ee;color:var(--ink);font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.48;background:linear-gradient(28deg,transparent 49.8%,#70c8ff 50%,transparent 50.2%) 0 0/100% 100%,linear-gradient(151deg,transparent 49.8%,#70c8ff 50%,transparent 50.2%) 0 0/100% 100%;clip-path:polygon(0 24%,16% 32%,16% 0,17% 0,17% 32%,0 25%)}body:after{opacity:.35;clip-path:polygon(88% 0,89% 0,89% 7%,100% 13%,100% 14%,88% 8%);transform:scale(1.2)}
+.ambient{position:fixed;inset:0;pointer-events:none;background:linear-gradient(145deg,transparent 70%,#9b7aff22 70.1%,transparent 70.5%),linear-gradient(35deg,transparent 84%,#6ac8ff66 84.1%,transparent 84.3%);z-index:0}
+.app{position:relative;z-index:1;width:min(1200px,calc(100% - 42px));min-height:min(820px,calc(100vh - 70px));margin:35px auto;background:var(--app);border:1px solid #3b344c;border-radius:26px;box-shadow:0 28px 90px #19083c88;display:grid;grid-template-columns:78px minmax(0,1fr);overflow:hidden}
+.rail{background:#15151b;border-right:1px solid #2b2933;display:flex;flex-direction:column;align-items:center;padding:18px 9px;gap:13px}.brandmark{width:39px;height:39px;border-radius:13px;background:#f7f5ff;color:#6730df;display:grid;place-items:center;font-size:25px;font-weight:900;margin-bottom:12px}.navitem{width:57px;min-height:58px;border:0;border-radius:12px;background:transparent;color:#8d8998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px}.navitem .ico{font-size:21px}.navitem.active{background:#292832;color:#fff;box-shadow:inset 0 0 0 1px #3b3945}.rail-spacer{flex:1}
+.workspace{min-width:0;display:grid;grid-template-rows:60px minmax(0,1fr)}.topbar{display:flex;align-items:center;justify-content:flex-end;padding:0 23px;border-bottom:1px solid #2c2936;gap:19px;color:#bdb7c8}.topicon{font-size:18px}.avatar{width:27px;height:27px;border-radius:50%;background:linear-gradient(135deg,#f0a64a,#7c4bce);display:grid;place-items:center;color:#17131f;font-weight:800}
+.content{padding:18px 22px 22px;display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:22px;min-height:0}.playarea{min-width:0;display:flex;flex-direction:column;gap:9px}.player{display:flex;align-items:center;gap:10px;min-height:39px;padding:0 2px}.player.bottom{margin-top:1px}.portrait{width:33px;height:33px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(140deg,#384d85,#e39b4d);font-size:16px;border:2px solid #51426b}.pname{font-size:13px;font-weight:650}.rating{font-size:11px;color:#9c96a9}.player-meta{margin-left:auto;display:flex;align-items:center;gap:8px}.clock{padding:6px 12px;border-radius:5px;background:#2b2935;color:#eae6f2;font-weight:750;font-size:18px;letter-spacing:.3px}.clock.you{background:#f4f0e7;color:#211d29}.board-shell{position:relative;width:min(100%,690px);margin:0 auto;align-self:center}.board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:0;border-radius:10px;overflow:hidden;box-shadow:0 12px 30px #0005;touch-action:manipulation}.sq{border:0;border-radius:0;display:grid;place-items:center;padding:0;position:relative;cursor:pointer;font-family:Georgia,serif;font-size:clamp(27px,5.7vw,61px);line-height:1}.sq.light{background:var(--cream);color:#51463e}.sq.dark{background:var(--orange);color:#51463e}.sq.selected{box-shadow:inset 0 0 0 4px #6f4bd8}.sq.last{background:#d5c77c}.sq.legal:after{content:"";position:absolute;width:23%;height:23%;border-radius:50%;background:#4b3c2d55}.sq.capture:after{width:82%;height:82%;background:transparent;border:5px solid #b84f4f99}.piece{filter:drop-shadow(0 2px 1px #0004);z-index:1}.sq .coord{position:absolute;left:3px;bottom:1px;font:9px system-ui;opacity:.65;color:#765e3f}.moveside{min-width:0;display:flex;flex-direction:column;background:#201e29;border:1px solid #302d3b;border-radius:12px;overflow:hidden}.gamehead{padding:17px 15px 13px;border-bottom:1px solid #34303e}.game-type{font-size:12px;font-weight:700;letter-spacing:.3px}.game-sub{font-size:11px;color:#928b9e;margin-top:4px}.status{margin-top:12px;padding:8px 10px;background:#2b2935;border:1px solid #403b4c;border-radius:7px;color:#d9d3e4;font-size:12px;min-height:36px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.button{border:1px solid #494457;background:#373340;color:#f1edf8;padding:8px 10px;border-radius:7px;font-weight:650;font-size:12px;cursor:pointer}.button.primary{background:#6e48d8;border-color:#8c6be9;color:white}.button:disabled{opacity:.42;cursor:not-allowed}.field{display:flex;gap:6px;margin-top:9px}.field input{min-width:0;width:100%;flex:1;background:#17151e;color:#f4efff;border:1px solid #484254;border-radius:7px;padding:8px;font:12px system-ui}.muted{color:#a59db0;font-size:11px}.section-title{font-size:12px;font-weight:750;margin:0 0 10px}.game-tools{display:flex;justify-content:space-around;align-items:center;padding:13px 10px;border-bottom:1px solid #34303e;color:#8e879b}.toolbtn{background:none;border:0;color:inherit;font-size:17px;cursor:pointer}.movehead{display:grid;grid-template-columns:1fr 42px 1fr;text-align:center;color:#a49caf;font-size:10px;padding:13px 12px 7px}.moves{overflow:auto;min-height:100px;max-height:240px;padding:0 12px 14px;color:#d6d0df;font-size:12px}.move-row{display:grid;grid-template-columns:1fr 42px 1fr;text-align:center;padding:5px 3px;border-radius:4px}.move-row:nth-child(odd){background:#ffffff08}.move-row .num{color:#928aa0}.extras{padding:12px;border-top:1px solid #34303e;margin-top:auto}.extras .actions{margin-top:8px}.rules{padding:10px 13px;border-top:1px solid #34303e;color:#a59db0;font-size:10px;line-height:1.5}.notice{font-size:10px;color:#a59db0;margin:8px 0 0;line-height:1.45}.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:20px;z-index:5}.modal.show{display:grid}.modal-card{background:#211e2c;border:1px solid #51466c;border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center}.promos{display:flex;justify-content:center;gap:10px;margin-top:15px}.promos button{font-size:38px;width:62px;height:62px;background:#373340;border:1px solid #5a526a;border-radius:10px;cursor:pointer;color:white}
+@media(max-width:900px){.content{grid-template-columns:minmax(0,1fr) 245px;gap:13px;padding:14px}.app{width:calc(100% - 24px);margin:12px auto;min-height:calc(100vh - 24px)}}
+@media(max-width:680px){.app{grid-template-columns:1fr;grid-template-rows:58px auto;border-radius:18px}.rail{grid-row:1;flex-direction:row;justify-content:flex-start;padding:8px 12px;border-right:0;border-bottom:1px solid #2b2933;gap:7px}.brandmark{margin:0 7px 0 0;width:36px;height:36px}.navitem{width:48px;min-height:42px;font-size:9px}.navitem .ico{font-size:17px}.rail-spacer{display:none}.workspace{grid-row:2;grid-template-rows:43px auto}.topbar{padding:0 14px}.content{grid-template-columns:1fr;padding:10px;gap:12px}.playarea{gap:5px}.board-shell{width:min(100%,560px)}.sq{font-size:clamp(27px,9vw,53px)}.player{min-height:32px}.portrait{width:29px;height:29px}.clock{font-size:15px;padding:4px 9px}.moveside{min-height:340px}.moves{max-height:160px}.rules{font-size:10px}}
 </style>
 </head>
-<body>
-<header><div class="brand"><div class="logo">♞</div><div><h1>ChessLink</h1><div class="tag">Real chess. Direct connection. No accounts.</div></div></div><div class="tag">♟ Peer-to-peer</div></header>
-<main class="wrap">
-<section class="panel board-panel">
- <div class="board-top"><span id="blackLabel">Black · Waiting</span><span id="turnLabel">White to move</span></div>
- <div id="board" class="board" aria-label="Chess board"></div>
- <div class="board-bottom"><span id="whiteLabel">White · You</span><span id="orientationLabel">White's view</span></div>
-</section>
-<aside class="side">
- <section class="panel">
-  <h2 class="section-title">Play online</h2>
-  <div class="status" id="status" aria-live="polite">Create a room or join a friend's room to start.</div>
-  <div class="actions" style="margin-top:12px"><button class="button primary" id="hostBtn">Create room</button><button class="button" id="copyBtn" disabled>Copy invite code</button></div>
-  <div class="divider"></div>
-  <label class="muted" for="roomInput">Have an invite code?</label>
-  <div class="field"><input id="roomInput" placeholder="Paste room code" autocomplete="off"><button class="button" id="joinBtn">Join</button></div>
-  <p class="notice">The room creator plays White. The guest plays Black. Share the code with your opponent.</p>
- </section>
- <section class="panel">
-  <h2 class="section-title">Game controls</h2>
-  <div class="actions"><button class="button" id="flipBtn">Flip board</button><button class="button" id="newBtn">New local game</button></div>
-  <p class="notice">Moves are checked by the chess rules engine before they're accepted.</p>
- </section>
- <section class="panel">
-  <h2 class="section-title">Moves</h2>
-  <div class="moves" id="moves"><span class="muted">Moves will appear here.</span></div>
- </section>
- <section class="panel">
-  <h2 class="section-title">Full chess rules</h2>
-  <p class="muted">Castling (both sides), en passant, and all four promotion choices (queen, rook, bishop, knight) are supported, along with check, checkmate, stalemate, repetition and draw rules.</p>
- </section>
-</aside>
-</main>
-<footer>ChessLink is a static GitHub Pages app. Peer connections use PeerJS's public signaling service; game moves travel directly between browsers when the network allows it.</footer>
+<body><div class="ambient"></div>
+<div class="app">
+ <nav class="rail" aria-label="Main navigation">
+  <div class="brandmark">♘</div>
+  <div class="navitem active"><span class="ico">▦</span><span>Play</span></div>
+  <div class="navitem"><span class="ico">♧</span><span>Puzzles</span></div>
+  <div class="navitem"><span class="ico">▤</span><span>Learn</span></div>
+  <div class="navitem"><span class="ico">•••</span><span>More</span></div>
+  <div class="rail-spacer"></div>
+  <div class="navitem"><span class="ico">⚙</span><span>Settings</span></div>
+ </nav>
+ <div class="workspace">
+  <div class="topbar"><span class="topicon">⌕</span><span class="topicon">♙</span><span class="topicon">♧</span><div class="avatar">C</div></div>
+  <main class="content">
+   <section class="playarea">
+    <div class="player"><div class="portrait">♟</div><div><div class="pname" id="blackLabel">Black · Waiting</div><div class="rating">ChessLink player</div></div><div class="player-meta"><span class="clock">P2P</span></div></div>
+    <div class="board-shell"><div id="board" class="board" aria-label="Chess board"></div></div>
+    <div class="player bottom"><div class="portrait">♙</div><div><div class="pname" id="whiteLabel">White · You</div><div class="rating">ChessLink player</div></div><div class="player-meta"><span class="clock you" id="turnLabel">White to move</span></div></div>
+   </section>
+   <aside class="moveside">
+    <section class="gamehead">
+     <div class="game-type">CHESSLINK <span style="color:#9d8ce0">•</span> PEER-TO-PEER</div>
+     <div class="game-sub" id="orientationLabel">White's view · Direct browser connection</div>
+     <div class="status" id="status" aria-live="polite">Create a room or join a friend's room to start.</div>
+     <div class="actions"><button class="button primary" id="hostBtn">Create room</button><button class="button" id="copyBtn" disabled>Copy code</button></div>
+     <label class="muted" for="roomInput" style="display:block;margin-top:12px">JOIN WITH INVITE CODE</label>
+     <div class="field"><input id="roomInput" placeholder="Paste room code" autocomplete="off"><button class="button" id="joinBtn">Join</button></div>
+     <p class="notice">Room creator plays White. Guest plays Black.</p>
+    </section>
+    <div class="game-tools"><button class="toolbtn" id="flipBtn" title="Flip board">◧</button><button class="toolbtn" id="newBtn" title="New local game">↻</button><span title="Legal moves are validated">⚙</span></div>
+    <div class="movehead"><span>WHITE</span><span>MOVE</span><span>BLACK</span></div>
+    <div class="moves" id="moves"><span class="muted">Moves will appear here.</span></div>
+    <section class="extras"><div class="section-title">GAME OPTIONS</div><div class="actions"><button class="button" id="flipBtnAlt" type="button">Flip board</button><button class="button" id="newBtnAlt" type="button">New game</button></div><p class="notice">Use the board to select a piece, then tap its destination square.</p></section>
+    <div class="rules">FULL CHESS RULES<br>Castling · En passant · Queen, rook, bishop or knight promotion · Checkmate · Stalemate · Draw detection</div>
+   </aside>
+  </main>
+ </div>
+</div>
 <div class="modal" id="promotionModal" role="dialog" aria-modal="true" aria-label="Choose promotion"><div class="modal-card"><h2>Promote your pawn</h2><p class="muted">Choose the piece you want.</p><div class="promos" id="promoChoices"></div></div></div>
 <script type="module">
 import { Chess } from "https://esm.sh/chess.js@1.4.0";
@@ -165,5 +173,9 @@ $("copyBtn").onclick=async()=>{if(!roomCode)return;try{await navigator.clipboard
 $("flipBtn").onclick=()=>{flipped=!flipped;render()};
 $("newBtn").onclick=()=>{closeNetwork();game.reset();role="local";myColor="w";flipped=false;lastMove=null;selected=null;legal=[];render();setStatus("New local game started.")};
 render();
+</script>
+<script>
+document.getElementById('flipBtnAlt').addEventListener('click',()=>document.getElementById('flipBtn').click());
+document.getElementById('newBtnAlt').addEventListener('click',()=>document.getElementById('newBtn').click());
 </script>
 </body></html>
