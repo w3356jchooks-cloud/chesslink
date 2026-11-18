@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827"><meta name="description" content="Play chess with a friend, peer-to-peer.">
+<title>ChessLink — Peer-to-peer chess</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#151d31;--panel2:#1c2941;--text:#edf2ff;--muted:#9aa9c4;--accent:#8b9cff;--light:#e8edf5;--dark:#64748b;--gold:#f7d774;--green:#62d6a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2850 0,#0b1020 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{max-width:1120px;margin:auto;padding:26px 22px 12px;display:flex;align-items:center;justify-content:space-between;gap:16px}h1{font-size:clamp(25px,4vw,36px);margin:0;letter-spacing:-1px}.brand{display:flex;align-items:center;gap:12px}.logo{font-size:34px}.tag{color:var(--muted);font-size:13px}.wrap{max-width:1120px;margin:0 auto;padding:16px 22px 42px;display:grid;grid-template-columns:minmax(280px,660px) minmax(260px,1fr);gap:22px}
+.panel{background:linear-gradient(145deg,#18233aee,#111a2cee);border:1px solid #33415f;border-radius:18px;padding:17px;box-shadow:0 18px 55px #0004}.board-panel{padding:16px}.board-top,.board-bottom{display:flex;justify-content:space-between;align-items:center;padding:6px 2px;color:var(--muted);font-size:13px}.board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:5px solid #34415d;border-radius:8px;overflow:hidden;box-shadow:0 12px 35px #0006;touch-action:manipulation}.sq{border:0;border-radius:0;display:grid;place-items:center;padding:0;position:relative;cursor:pointer;font-family:serif;font-size:clamp(27px,6.5vw,62px);line-height:1}.sq.light{background:#e8edf5;color:#111827}.sq.dark{background:#64748b;color:#111827}.sq.selected{box-shadow:inset 0 0 0 5px #f7d774}.sq.last{background:#b7ad65}.sq.legal:after{content:"";position:absolute;width:24%;height:24%;border-radius:50%;background:#1d293d55}.sq.capture:after{width:82%;height:82%;background:transparent;border:5px solid #d65d5d99}.piece{filter:drop-shadow(0 2px 1px #0004);z-index:1}.sq .coord{position:absolute;left:3px;bottom:1px;font:10px system-ui;opacity:.7}.side{display:flex;flex-direction:column;gap:15px}.section-title{font-weight:700;margin:0 0 10px;font-size:16px}.actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #435477;background:#273653;color:var(--text);padding:10px 13px;border-radius:10px;font-weight:650;cursor:pointer}.button.primary{background:#7186ff;color:#0b1020;border-color:#9eacff}.button:disabled{opacity:.45;cursor:not-allowed}.field{display:flex;gap:8px;margin-top:10px}.field input{min-width:0;flex:1;background:#0d1526;color:var(--text);border:1px solid #3a4a6b;border-radius:9px;padding:10px;font:inherit}.status{padding:11px 12px;background:#0d172a;border:1px solid #344361;border-radius:10px;color:#dbe5ff}.status strong{color:var(--green)}.muted{color:var(--muted);font-size:13px}.moves{max-height:250px;overflow:auto;background:#0d1526;border-radius:10px;padding:10px;font:13px ui-monospace,monospace;color:#cbd7f0}.move-row{display:grid;grid-template-columns:28px 1fr 1fr;gap:8px;padding:3px 2px}.move-row:nth-child(odd){background:#ffffff08}.move-row .num{color:#7184a9}.divider{height:1px;background:#33415b;margin:13px 0}.notice{font-size:12px;color:#aebbd3;margin-top:10px}.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:20px;z-index:5}.modal.show{display:grid}.modal-card{background:#18243b;border:1px solid #506184;border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center}.promos{display:flex;justify-content:center;gap:10px;margin-top:15px}.promos button{font-size:38px;width:62px;height:62px;background:#273653;border:1px solid #506184;border-radius:10px;cursor:pointer;color:white}
+footer{max-width:1120px;margin:auto;padding:0 22px 28px;color:#7889a8;font-size:12px}
+@media(max-width:780px){.wrap{grid-template-columns:1fr;padding:12px 12px 30px;gap:14px}header{padding:20px 14px 8px}.panel{padding:12px}.board{border-width:3px}.sq{font-size:clamp(29px,10vw,54px)}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">♞</div><div><h1>ChessLink</h1><div class="tag">Real chess. Direct connection. No accounts.</div></div></div><div class="tag">♟ Peer-to-peer</div></header>
+<main class="wrap">
+<section class="panel board-panel">
+ <div class="board-top"><span id="blackLabel">Black · Waiting</span><span id="turnLabel">White to move</span></div>
+ <div id="board" class="board" aria-label="Chess board"></div>
+ <div class="board-bottom"><span id="whiteLabel">White · You</span><span id="orientationLabel">White's view</span></div>
+</section>
+<aside class="side">
+ <section class="panel">
+  <h2 class="section-title">Play online</h2>
+  <div class="status" id="status" aria-live="polite">Create a room or join a friend's room to start.</div>
+  <div class="actions" style="margin-top:12px"><button class="button primary" id="hostBtn">Create room</button><button class="button" id="copyBtn" disabled>Copy invite code</button></div>
+  <div class="divider"></div>
+  <label class="muted" for="roomInput">Have an invite code?</label>
+  <div class="field"><input id="roomInput" placeholder="Paste room code" autocomplete="off"><button class="button" id="joinBtn">Join</button></div>
+  <p class="notice">The room creator plays White. The guest plays Black. Share the code with your opponent.</p>
+ </section>
+ <section class="panel">
+  <h2 class="section-title">Game controls</h2>
+  <div class="actions"><button class="button" id="flipBtn">Flip board</button><button class="button" id="newBtn">New local game</button></div>
+  <p class="notice">Moves are checked by the chess rules engine before they're accepted.</p>
+ </section>
+ <section class="panel">
+  <h2 class="section-title">Moves</h2>
+  <div class="moves" id="moves"><span class="muted">Moves will appear here.</span></div>
+ </section>
+ <section class="panel">
+  <h2 class="section-title">Full chess rules</h2>
+  <p class="muted">Castling (both sides), en passant, and all four promotion choices (queen, rook, bishop, knight) are supported, along with check, checkmate, stalemate, repetition and draw rules.</p>
+ </section>
+</aside>
+</main>
+<footer>ChessLink is a static GitHub Pages app. Peer connections use PeerJS's public signaling service; game moves travel directly between browsers when the network allows it.</footer>
+<div class="modal" id="promotionModal" role="dialog" aria-modal="true" aria-label="Choose promotion"><div class="modal-card"><h2>Promote your pawn</h2><p class="muted">Choose the piece you want.</p><div class="promos" id="promoChoices"></div></div></div>
+<script type="module">
+import { Chess } from "https://esm.sh/chess.js@1.4.0";
+import Peer from "https://esm.sh/peerjs@1.5.4";
+
+const $ = id => document.getElementById(id);
+const glyph = {wk:"♔",wq:"♕",wr:"♖",wb:"♗",wn:"♘",wp:"♙",bk:"♚",bq:"♛",br:"♜",bb:"♝",bn:"♞",bp:"♟"};
+let game = new Chess(), selected = null, legal = [], flipped = false, lastMove = null;
+let peer = null, conn = null, role = "local", roomCode = "", myColor = "w", connected = false, pendingPromotion = null;
+const files = "abcdefgh";
+function setStatus(msg){$("status").textContent=msg}
+function squareName(file,rank){return files[file]+rank}
+function boardSquares(){
+ const ranks = flipped ? [1,2,3,4,5,6,7,8] : [8,7,6,5,4,3,2,1];
+ const cols = flipped ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7];
+ return ranks.flatMap(rank=>cols.map(file=>({file,rank,sq:squareName(file,rank)})));
+}
+function render(){
+ const board=$("board"); board.innerHTML="";
+ const legalTargets=new Set(legal.map(m=>m.to));
+ for(const {file,rank,sq} of boardSquares()){
+  const piece=game.get(sq), b=document.createElement("button");
+  b.className="sq "+(((file+rank)%2===0)?"light":"dark");
+  if(selected===sq)b.classList.add("selected");
+  if(lastMove&&(lastMove.from===sq||lastMove.to===sq))b.classList.add("last");
+  if(legalTargets.has(sq)){b.classList.add("legal");if(piece)b.classList.add("capture")}
+  b.setAttribute("aria-label",sq+(piece?", "+(piece.color==="w"?"white ":"black ")+piece.type:""));
+  if(piece){const span=document.createElement("span");span.className="piece";span.textContent=glyph[piece.color+piece.type];b.append(span)}
+  if((!flipped&&file===0)||(flipped&&file===7)){const c=document.createElement("span");c.className="coord";c.textContent=rank;b.append(c)}
+  if((!flipped&&rank===1)||(flipped&&rank===8)){const c=document.createElement("span");c.className="coord";c.style.left="auto";c.style.right="3px";c.textContent=files[file];b.append(c)}
+  b.addEventListener("click",()=>onSquare(sq));board.append(b);
+ }
+ $("turnLabel").textContent=game.isGameOver()?gameOverText():((game.turn()==="w"?"White":"Black")+" to move");
+ $("moves").innerHTML="";
+ const hist=game.history();
+ if(!hist.length)$("moves").innerHTML='<span class="muted">Moves will appear here.</span>';
+ for(let i=0;i<hist.length;i+=2){const row=document.createElement("div");row.className="move-row";row.innerHTML='<span class="num">'+(Math.floor(i/2)+1)+'.</span><span></span><span></span>';row.children[1].textContent=hist[i];if(hist[i+1])row.children[2].textContent=hist[i+1];$("moves").append(row)}
+ $("moves").scrollTop=$("moves").scrollHeight;
+ $("whiteLabel").textContent="White · "+(role==="host"?"You":role==="guest"?"Opponent":"Local");
+ $("blackLabel").textContent="Black · "+(role==="guest"?"You":role==="host"?"Opponent":"Local");
+ $("orientationLabel").textContent=flipped?"Black's view":"White's view";
+}
+function gameOverText(){if(game.isCheckmate())return "Checkmate — "+(game.turn()==="w"?"Black":"White")+" wins";if(game.isStalemate())return "Draw — stalemate";if(game.isThreefoldRepetition())return "Draw — threefold repetition";if(game.isInsufficientMaterial())return "Draw — insufficient material";if(game.isDraw())return "Draw";return "Game over"}
+function canMove(){return role==="local"|| (role==="host"&&myColor==="w"&&game.turn()==="w")||(role==="guest"&&myColor==="b"&&game.turn()==="b")}
+function onSquare(sq){
+ if(!canMove()||game.isGameOver())return;
+ const piece=game.get(sq);
+ if(selected){
+  const candidates=legal.filter(m=>m.to===sq);
+  if(candidates.length){
+   if(candidates.some(m=>m.promotion)){showPromotion(selected,sq);return}
+   makeMove({from:selected,to:sq});return;
+  }
+ }
+ if(piece&&piece.color===game.turn()){selected=sq;legal=game.moves({square:sq,verbose:true})}
+ else {selected=null;legal=[]}
+ render();
+}
+function showPromotion(from,to){
+ pendingPromotion={from,to};$("promoChoices").innerHTML="";
+ const color=game.turn();
+ for(const type of ["q","r","b","n"]){const b=document.createElement("button");b.textContent=glyph[color+type];b.title=({q:"Queen",r:"Rook",b:"Bishop",n:"Knight"})[type];b.onclick=()=>{$("promotionModal").classList.remove("show");const p=pendingPromotion;pendingPromotion=null;makeMove({...p,promotion:type})};$("promoChoices").append(b)}
+ $("promotionModal").classList.add("show");
+}
+function makeMove(move){
+ try{
+  const result=game.move(move);if(!result)return;
+  lastMove={from:result.from,to:result.to};selected=null;legal=[];
+  if(role==="guest"){conn?.send({type:"move",move:{from:result.from,to:result.to,promotion:result.promotion}})}
+  else if(role==="host"){broadcastState()}
+  render();if(game.isGameOver())setStatus(gameOverText());
+ }catch(e){console.error(e)}
+}
+function broadcastState(){if(conn?.open)conn.send({type:"state",fen:game.fen(),pgn:game.pgn(),lastMove})}
+function applyRemoteState(data){try{game.load(data.fen);lastMove=data.lastMove||null;selected=null;legal=[];render();if(game.isGameOver())setStatus(gameOverText());else setStatus("Connected — "+(myColor==="w"?"you are White":"you are Black"))}catch(e){setStatus("Received an invalid game state; ignored.")}}
+function closeNetwork(){try{conn?.close();peer?.destroy()}catch{}conn=null;peer=null;connected=false;roomCode="";$("copyBtn").disabled=true}
+function setupConnection(c,isHost){
+ conn=c;
+ c.on("open",()=>{
+  connected=true;
+  if(isHost){c.send({type:"hello",fen:game.fen(),pgn:game.pgn()});setStatus("Opponent connected — you play White.");}
+  else setStatus("Connected — waiting for the host's board.");
+  $("copyBtn").disabled=false;
+ });
+ c.on("data",data=>{
+  if(!data||typeof data!=="object")return;
+  if(data.type==="hello"&&!isHost){try{game.load(data.fen);myColor="b";role="guest";flipped=true;render();setStatus("Joined successfully — you play Black.");}catch{setStatus("Host sent an invalid board state.")}}
+  if(data.type==="move"&&isHost){
+   try{const m=game.move(data.move);if(!m){c.send({type:"error",message:"That move is illegal."});return}lastMove={from:m.from,to:m.to};selected=null;legal=[];broadcastState();render();if(game.isGameOver())setStatus(gameOverText())}catch{c.send({type:"error",message:"Invalid move."})}
+  }
+  if(data.type==="state"&&!isHost)applyRemoteState(data);
+  if(data.type==="error")setStatus(data.message||"The other player rejected that move.");
+ });
+ c.on("close",()=>{connected=false;setStatus("Opponent disconnected.");});
+ c.on("error",e=>{console.error(e);setStatus("Connection error: "+(e.message||"could not connect."));});
+}
+$("hostBtn").onclick=()=>{
+ closeNetwork();game.reset();lastMove=null;role="host";myColor="w";flipped=false;selected=null;legal=[];render();
+ const code="cl-"+Math.random().toString(36).slice(2,9);
+ roomCode=code;$("roomInput").value=code;
+ peer=new Peer(code);
+ setStatus("Creating room…");
+ peer.on("open",id=>{roomCode=id;$("roomInput").value=id;$("copyBtn").disabled=false;setStatus("Room ready! Send the invite code to your opponent.");});
+ peer.on("connection",c=>{if(conn){c.close();return}setupConnection(c,true)});
+ peer.on("error",e=>{console.error(e);setStatus(e.type==="unavailable-id"?"Room code collision — create a new room.":"Peer service error: "+e.type);});
+};
+$("joinBtn").onclick=()=>{
+ const code=$("roomInput").value.trim();if(!code){setStatus("Enter a room code first.");return}
+ closeNetwork();game.reset();lastMove=null;role="guest";myColor="b";flipped=true;selected=null;legal=[];render();
+ peer=new Peer();
+ setStatus("Connecting to "+code+"…");
+ peer.on("open",()=>{const c=peer.connect(code,{reliable:true});setupConnection(c,false)});
+ peer.on("error",e=>{console.error(e);setStatus("Could not connect: "+e.type+". Check the code and try again.");});
+};
+$("copyBtn").onclick=async()=>{if(!roomCode)return;try{await navigator.clipboard.writeText(roomCode);setStatus("Invite code copied!")}catch{$("roomInput").select();setStatus("Select and copy the room code.")}};
+$("flipBtn").onclick=()=>{flipped=!flipped;render()};
+$("newBtn").onclick=()=>{closeNetwork();game.reset();role="local";myColor="w";flipped=false;lastMove=null;selected=null;legal=[];render();setStatus("New local game started.")};
+render();
+</script>
+</body></html>
