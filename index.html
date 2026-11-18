@@ -74,12 +74,12 @@ let game = new Chess(), selected = null, legal = [], flipped = false, lastMove =
 let peer = null, conn = null, role = "local", roomCode = "", myColor = "w", connected = false, pendingPromotion = null;
 const files = "abcdefgh";
 let clockSeconds={w:180,b:180}, clockStarted=false, clockHandle=null, viewingPly=null, positionHistory=[];
-let zoomLevel=1, drawPending=false, gameFinished=false;
+let zoomLevel=1, drawPending=false, gameFinished=false, matchRecorded=false;
 function clockText(n){n=Math.max(0,n);return String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0")}
 function paintClocks(){ $("whiteClock").textContent=clockText(clockSeconds.w); $("blackClock").textContent=clockText(clockSeconds.b); $("whiteClock").style.opacity=game.turn()==="w"?"1":".65"; $("blackClock").style.opacity=game.turn()==="b"?"1":".65"; }
 function startClock(){if(clockStarted)return;clockStarted=true;clockHandle=setInterval(()=>{if(gameFinished||game.isGameOver())return;const c=game.turn();clockSeconds[c]=Math.max(0,clockSeconds[c]-1);paintClocks();if(clockSeconds[c]===0){gameFinished=true;setStatus((c==="w"?"White":"Black")+" ran out of time — "+(c==="w"?"Black":"White")+" wins.");if(conn?.open)conn.send({type:"timeout",loser:c});endGame("You ran out of time — "+(c==="w"?"Black":"White")+" wins.");}},1000)}
 function stopClock(){if(clockHandle)clearInterval(clockHandle);clockHandle=null;clockStarted=false}
-function resetClock(){stopClock();clockSeconds={w:180,b:180};gameFinished=false;paintClocks()}
+function resetClock(){stopClock();clockSeconds={w:180,b:180};gameFinished=false;matchRecorded=false;paintClocks()}
 function sendPacket(packet){if(conn?.open)conn.send(packet)}
 function addChat(text,mine=false){const box=$("chatMessages");const empty=box.querySelector(".chat-empty");if(empty)empty.remove();const bubble=document.createElement("div");bubble.className="chatbubble"+(mine?" mine":"");bubble.textContent=text;const time=document.createElement("small");time.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});bubble.append(time);box.append(bubble);box.scrollTop=box.scrollHeight}
 function feature(title,body){$("featureContent").innerHTML="<h2>"+title+"</h2>"+body;$("featureModal").classList.add("show")}
@@ -101,7 +101,7 @@ function recordFinishedMatch(message){
  let list=[];try{list=JSON.parse(localStorage.getItem(MATCH_KEY)||"[]")}catch{}
  const id="m-"+(crypto.randomUUID?.()||Date.now().toString(36));
  list.push({id,whiteId:white.id,blackId:black.id,result,completedAt:new Date().toISOString(),pgn:game.pgn()});
- localStorage.setItem(MATCH_KEY,JSON.stringify(list));
+ localStorage.setItem(MATCH_KEY,JSON.stringify(list));matchRecorded=true;
 }
 
 
