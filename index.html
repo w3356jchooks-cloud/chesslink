@@ -15,6 +15,8 @@ body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;opa
 .content{padding:18px 22px 22px;display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:22px;min-height:0}.playarea{min-width:0;display:flex;flex-direction:column;gap:9px}.player{display:flex;align-items:center;gap:10px;min-height:39px;padding:0 2px}.player.bottom{margin-top:1px}.portrait{width:33px;height:33px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(140deg,#384d85,#e39b4d);font-size:16px;border:2px solid #51426b}.pname{font-size:13px;font-weight:650}.rating{font-size:11px;color:#9c96a9}.player-meta{margin-left:auto;display:flex;align-items:center;gap:8px}.clock{padding:6px 12px;border-radius:5px;background:#2b2935;color:#eae6f2;font-weight:750;font-size:18px;letter-spacing:.3px}.clock.you{background:#f4f0e7;color:#211d29}.board-shell{position:relative;width:min(100%,690px);margin:0 auto;align-self:center}.board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:0;border-radius:10px;overflow:hidden;box-shadow:0 12px 30px #0005;touch-action:manipulation}.sq{border:0;border-radius:0;display:grid;place-items:center;padding:0;position:relative;cursor:pointer;font-family:Georgia,serif;font-size:clamp(27px,5.7vw,61px);line-height:1}.sq.light{background:var(--cream);color:#51463e}.sq.dark{background:var(--orange);color:#51463e}.sq.selected{box-shadow:inset 0 0 0 4px #6f4bd8}.sq.last{background:#d5c77c}.sq.legal:after{content:"";position:absolute;width:23%;height:23%;border-radius:50%;background:#4b3c2d55}.sq.capture:after{width:82%;height:82%;background:transparent;border:5px solid #b84f4f99}.piece{filter:drop-shadow(0 2px 1px #0004);z-index:1}.sq .coord{position:absolute;left:3px;bottom:1px;font:9px system-ui;opacity:.65;color:#765e3f}.moveside{min-width:0;display:flex;flex-direction:column;background:#201e29;border:1px solid #302d3b;border-radius:12px;overflow:hidden}.gamehead{padding:17px 15px 13px;border-bottom:1px solid #34303e}.game-type{font-size:12px;font-weight:700;letter-spacing:.3px}.game-sub{font-size:11px;color:#928b9e;margin-top:4px}.status{margin-top:12px;padding:8px 10px;background:#2b2935;border:1px solid #403b4c;border-radius:7px;color:#d9d3e4;font-size:12px;min-height:36px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.button{border:1px solid #494457;background:#373340;color:#f1edf8;padding:8px 10px;border-radius:7px;font-weight:650;font-size:12px;cursor:pointer}.button.primary{background:#6e48d8;border-color:#8c6be9;color:white}.button:disabled{opacity:.42;cursor:not-allowed}.field{display:flex;gap:6px;margin-top:9px}.field input{min-width:0;width:100%;flex:1;background:#17151e;color:#f4efff;border:1px solid #484254;border-radius:7px;padding:8px;font:12px system-ui}.muted{color:#a59db0;font-size:11px}.section-title{font-size:12px;font-weight:750;margin:0 0 10px}.game-tools{display:flex;justify-content:space-around;align-items:center;padding:13px 10px;border-bottom:1px solid #34303e;color:#8e879b}.toolbtn{background:none;border:0;color:inherit;font-size:17px;cursor:pointer}.movehead{display:grid;grid-template-columns:1fr 42px 1fr;text-align:center;color:#a49caf;font-size:10px;padding:13px 12px 7px}.moves{overflow:auto;min-height:100px;max-height:240px;padding:0 12px 14px;color:#d6d0df;font-size:12px}.move-row{display:grid;grid-template-columns:1fr 42px 1fr;text-align:center;padding:5px 3px;border-radius:4px}.move-row:nth-child(odd){background:#ffffff08}.move-row .num{color:#928aa0}.extras{padding:12px;border-top:1px solid #34303e;margin-top:auto}.extras .actions{margin-top:8px}.rules{padding:10px 13px;border-top:1px solid #34303e;color:#a59db0;font-size:10px;line-height:1.5}.notice{font-size:10px;color:#a59db0;margin:8px 0 0;line-height:1.45}.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:20px;z-index:5}.modal.show{display:grid}.modal-card{background:#211e2c;border:1px solid #51466c;border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center}.promos{display:flex;justify-content:center;gap:10px;margin-top:15px}.promos button{font-size:38px;width:62px;height:62px;background:#373340;border:1px solid #5a526a;border-radius:10px;cursor:pointer;color:white}
 @media(max-width:900px){.content{grid-template-columns:minmax(0,1fr) 245px;gap:13px;padding:14px}.app{width:calc(100% - 24px);margin:12px auto;min-height:calc(100vh - 24px)}}
 @media(max-width:680px){.app{grid-template-columns:1fr;grid-template-rows:58px auto;border-radius:18px}.rail{grid-row:1;flex-direction:row;justify-content:flex-start;padding:8px 12px;border-right:0;border-bottom:1px solid #2b2933;gap:7px}.brandmark{margin:0 7px 0 0;width:36px;height:36px}.navitem{width:48px;min-height:42px;font-size:9px}.navitem .ico{font-size:17px}.rail-spacer{display:none}.workspace{grid-row:2;grid-template-rows:43px auto}.topbar{padding:0 14px}.content{grid-template-columns:1fr;padding:10px;gap:12px}.playarea{gap:5px}.board-shell{width:min(100%,560px)}.sq{font-size:clamp(27px,9vw,53px)}.player{min-height:32px}.portrait{width:29px;height:29px}.clock{font-size:15px;padding:4px 9px}.moveside{min-height:340px}.moves{max-height:160px}.rules{font-size:10px}}
+.headbtn{position:relative;border:0;background:transparent;color:#c8c1d2;cursor:pointer}.headbtn small{position:absolute;top:-5px;right:-8px;background:#5dbd83;color:#102016;border-radius:9px;padding:0 4px;font-size:9px}.chatbox{padding:13px 12px 12px;border-top:1px solid #34303e;display:flex;flex-direction:column;min-height:210px;flex:1}.chathead{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:8px}.chathead span{display:flex;gap:8px}.chatmessages{flex:1;min-height:90px;max-height:175px;overflow:auto;display:flex;flex-direction:column;gap:7px;padding:4px 1px 10px}.chat-empty{color:#8f879b;font-size:11px;text-align:center;margin:auto}.chatbubble{max-width:88%;align-self:flex-start;background:#302c3b;padding:7px 9px;border-radius:8px;font-size:11px;overflow-wrap:anywhere}.chatbubble.mine{align-self:flex-end;background:#405e4d}.chatbubble small{display:block;color:#b2aabc;font-size:9px;margin-top:3px}.chatinput{display:flex;gap:5px}.chatinput input{min-width:0;flex:1;background:#302c3b;border:1px solid #484254;color:#fff;border-radius:7px;padding:9px;font-size:11px}.chatinput .button{padding:7px 9px}.modal-close{float:right;border:0;background:transparent;color:#fff;font-size:18px;cursor:pointer}.feature-card{text-align:left}.feature-card h2{margin:4px 0 12px}.feature-card p,.feature-card li{color:#b8b0c5;font-size:13px}.feature-card .button{margin-top:8px}.zoom-controls{position:absolute;left:-42px;top:44%;display:flex;flex-direction:column;gap:4px}.zoom-controls button{width:32px;height:32px;border:1px solid #514a60;background:#25222f;color:#fff;border-radius:8px;cursor:pointer}.sq{transition:filter .12s}.sq:focus-visible{outline:3px solid #8c6be9;outline-offset:-3px}
+@media(max-width:680px){.zoom-controls{left:3px;top:4px;z-index:2;opacity:.85}.chatbox{min-height:220px}.chatmessages{max-height:150px}}
 </style>
 </head>
 <body><div class="ambient"></div>
@@ -29,34 +31,39 @@ body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;opa
   <div class="navitem"><span class="ico">⚙</span><span>Settings</span></div>
  </nav>
  <div class="workspace">
-  <div class="topbar"><span class="topicon">⌕</span><span class="topicon">♙</span><span class="topicon">♧</span><div class="avatar">C</div></div>
+  <div class="topbar"><button class="topicon headbtn" id="searchBtn" title="Search">⌕</button><button class="topicon headbtn" id="friendsBtn" title="Friends">♙<small id="friendDot">2</small></button><button class="topicon headbtn" id="notifyBtn" title="Notifications">♧</button><button class="avatar" id="profileBtn" title="Profile">C</button></div>
   <main class="content">
    <section class="playarea">
-    <div class="player"><div class="portrait">♟</div><div><div class="pname" id="blackLabel">Black · Waiting</div><div class="rating">ChessLink player</div></div><div class="player-meta"><span class="clock">P2P</span></div></div>
-    <div class="board-shell"><div id="board" class="board" aria-label="Chess board"></div></div>
-    <div class="player bottom"><div class="portrait">♙</div><div><div class="pname" id="whiteLabel">White · You</div><div class="rating">ChessLink player</div></div><div class="player-meta"><span class="clock you" id="turnLabel">White to move</span></div></div>
+    <div class="player"><div class="portrait">♟</div><div><div class="pname" id="blackLabel">Black · Waiting</div><div class="rating">ChessLink player</div></div><div class="player-meta"><span class="clock" id="blackClock">03:00</span></div></div>
+    <div class="board-shell"><div class="zoom-controls"><button id="zoomIn" title="Zoom in">＋</button><button id="zoomOut" title="Zoom out">−</button><button id="fullScreen" title="Fullscreen">⛶</button></div><div id="board" class="board" aria-label="Chess board"></div></div>
+    <div class="player bottom"><div class="portrait">♙</div><div><div class="pname" id="whiteLabel">White · You</div><div class="rating">ChessLink player</div></div><div class="player-meta"><span class="clock you" id="whiteClock">03:00</span></div></div>
    </section>
    <aside class="moveside">
     <section class="gamehead">
-     <div class="game-type">CHESSLINK <span style="color:#9d8ce0">•</span> PEER-TO-PEER</div>
+     <div class="game-type"><span id="gameMode">RATED · BLITZ · 3 MIN</span> <span style="color:#9d8ce0">•</span> <span id="watching">1 watching</span></div>
      <div class="game-sub" id="orientationLabel">White's view · Direct browser connection</div>
      <div class="status" id="status" aria-live="polite">Create a room or join a friend's room to start.</div>
-     <div class="actions"><button class="button primary" id="hostBtn">Create room</button><button class="button" id="copyBtn" disabled>Copy code</button></div>
+     <div class="actions"><button class="button primary" id="hostBtn">Create room</button><button class="button" id="copyBtn" disabled>Copy code</button></div><div class="actions"><button class="button" id="drawBtn">Offer draw</button><button class="button" id="resignBtn">Resign</button></div>
      <label class="muted" for="roomInput" style="display:block;margin-top:12px">JOIN WITH INVITE CODE</label>
      <div class="field"><input id="roomInput" placeholder="Paste room code" autocomplete="off"><button class="button" id="joinBtn">Join</button></div>
      <p class="notice">Room creator plays White. Guest plays Black.</p>
     </section>
-    <div class="game-tools"><button class="toolbtn" id="flipBtn" title="Flip board">◧</button><button class="toolbtn" id="newBtn" title="New local game">↻</button><span title="Legal moves are validated">⚙</span></div>
+    <div class="game-tools"><button class="toolbtn" id="firstMove" title="First move">⏮</button><button class="toolbtn" id="prevMove" title="Previous move">◀</button><button class="toolbtn" id="nextMove" title="Next move">▶</button><button class="toolbtn" id="lastMove" title="Latest move">⏭</button><button class="toolbtn" id="boardSettings" title="Board settings">⚙</button></div>
     <div class="movehead"><span>WHITE</span><span>MOVE</span><span>BLACK</span></div>
     <div class="moves" id="moves"><span class="muted">Moves will appear here.</span></div>
-    <section class="extras"><div class="section-title">GAME OPTIONS</div><div class="actions"><button class="button" id="flipBtnAlt" type="button">Flip board</button><button class="button" id="newBtnAlt" type="button">New game</button></div><p class="notice">Use the board to select a piece, then tap its destination square.</p></section>
+    <section class="chatbox"><div class="chathead"><b>Chat</b><span><button class="toolbtn" id="chatInvite" title="Invite">♙</button><button class="toolbtn" id="chatMenu" title="Chat options">⋮</button></span></div><div id="chatMessages" class="chatmessages"><div class="chat-empty">Say hello to your opponent 👋</div></div><div class="chatinput"><input id="chatInput" placeholder="Chat with opponent. Start typing…" maxlength="300"><button class="button" id="emojiBtn" title="Add emoji">☺</button><button class="button primary" id="sendChat">➤</button></div></section><section class="extras"><div class="section-title">GAME OPTIONS</div><div class="actions"><button class="button" id="flipBtnAlt" type="button">Flip board</button><button class="button" id="newBtnAlt" type="button">New game</button></div><p class="notice">Use the board to select a piece, then tap its destination square.</p></section>
     <div class="rules">FULL CHESS RULES<br>Castling · En passant · Queen, rook, bishop or knight promotion · Checkmate · Stalemate · Draw detection</div>
    </aside>
   </main>
  </div>
 </div>
 <div class="modal" id="promotionModal" role="dialog" aria-modal="true" aria-label="Choose promotion"><div class="modal-card"><h2>Promote your pawn</h2><p class="muted">Choose the piece you want.</p><div class="promos" id="promoChoices"></div></div></div>
-<script type="module">
+
+<script>
+document.getElementById('flipBtnAlt').addEventListener('click',()=>document.getElementById('flipBtn').click());
+document.getElementById('newBtnAlt').addEventListener('click',()=>document.getElementById('newBtn').click());
+</script>
+</body></html<script type="module">
 import { Chess } from "https://esm.sh/chess.js@1.4.0";
 import Peer from "https://esm.sh/peerjs@1.5.4";
 
@@ -65,6 +72,21 @@ const glyph = {wk:"♔",wq:"♕",wr:"♖",wb:"♗",wn:"♘",wp:"♙",bk:"♚",bq
 let game = new Chess(), selected = null, legal = [], flipped = false, lastMove = null;
 let peer = null, conn = null, role = "local", roomCode = "", myColor = "w", connected = false, pendingPromotion = null;
 const files = "abcdefgh";
+let clockSeconds={w:180,b:180}, clockStarted=false, clockHandle=null, viewingPly=null, positionHistory=[];
+let zoomLevel=1, drawPending=false, gameFinished=false;
+function clockText(n){n=Math.max(0,n);return String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0")}
+function paintClocks(){ $("whiteClock").textContent=clockText(clockSeconds.w); $("blackClock").textContent=clockText(clockSeconds.b); $("whiteClock").style.opacity=game.turn()==="w"?"1":".65"; $("blackClock").style.opacity=game.turn()==="b"?"1":".65"; }
+function startClock(){if(clockStarted)return;clockStarted=true;clockHandle=setInterval(()=>{if(gameFinished||game.isGameOver())return;const c=game.turn();clockSeconds[c]=Math.max(0,clockSeconds[c]-1);paintClocks();if(clockSeconds[c]===0){gameFinished=true;setStatus((c==="w"?"White":"Black")+" ran out of time — "+(c==="w"?"Black":"White")+" wins.");if(conn?.open)conn.send({type:"timeout",loser:c});}},1000)}
+function stopClock(){if(clockHandle)clearInterval(clockHandle);clockHandle=null;clockStarted=false}
+function resetClock(){stopClock();clockSeconds={w:180,b:180};gameFinished=false;paintClocks()}
+function sendPacket(packet){if(conn?.open)conn.send(packet)}
+function addChat(text,mine=false){const box=$("chatMessages");const empty=box.querySelector(".chat-empty");if(empty)empty.remove();const bubble=document.createElement("div");bubble.className="chatbubble"+(mine?" mine":"");bubble.textContent=text;const time=document.createElement("small");time.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});bubble.append(time);box.append(bubble);box.scrollTop=box.scrollHeight}
+function feature(title,body){$("featureContent").innerHTML="<h2>"+title+"</h2>"+body;$("featureModal").classList.add("show")}
+function replayAt(ply){const temp=new Chess();const history=game.history({verbose:true});for(let i=0;i<Math.min(ply,history.length);i++)temp.move(history[i]);return temp}
+function goPly(ply){const total=game.history().length;viewingPly=Math.max(0,Math.min(total,ply));const temp=replayAt(viewingPly);const board=$("board");board.innerHTML="";const ranks=flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1],cols=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];for(const rank of ranks)for(const file of cols){const sq="abcdefgh"[file]+rank,piece=temp.get(sq),b=document.createElement("button");b.className="sq "+(((file+rank)%2===0)?"light":"dark");if(piece){const span=document.createElement("span");span.className="piece";span.textContent=glyph[piece.color+piece.type];b.append(span)}b.disabled=true;board.append(b)}$("turnLabel").textContent=ply===total?"Live position":"Reviewing move "+ply+" / "+total;setStatus(ply===total?"Back to live game.":"Move review — return to latest to play.");}
+function returnLive(){viewingPly=null;render();paintClocks()}
+function endGame(message){gameFinished=true;stopClock();setStatus(message);render()}
+
 function setStatus(msg){$("status").textContent=msg}
 function squareName(file,rank){return files[file]+rank}
 function boardSquares(){
@@ -121,21 +143,21 @@ function showPromotion(from,to){
 }
 function makeMove(move){
  try{
-  const result=game.move(move);if(!result)return;
+  const result=game.move(move);if(!result)return; if(!clockStarted)startClock();viewingPly=null;
   lastMove={from:result.from,to:result.to};selected=null;legal=[];
   if(role==="guest"){conn?.send({type:"move",move:{from:result.from,to:result.to,promotion:result.promotion}})}
   else if(role==="host"){broadcastState()}
-  render();if(game.isGameOver())setStatus(gameOverText());
+  render();paintClocks();if(game.isGameOver())endGame(gameOverText());
  }catch(e){console.error(e)}
 }
-function broadcastState(){if(conn?.open)conn.send({type:"state",fen:game.fen(),pgn:game.pgn(),lastMove})}
-function applyRemoteState(data){try{game.load(data.fen);lastMove=data.lastMove||null;selected=null;legal=[];render();if(game.isGameOver())setStatus(gameOverText());else setStatus("Connected — "+(myColor==="w"?"you are White":"you are Black"))}catch(e){setStatus("Received an invalid game state; ignored.")}}
+function broadcastState(){if(conn?.open)conn.send({type:"state",fen:game.fen(),pgn:game.pgn(),lastMove,clocks:clockSeconds})}
+function applyRemoteState(data){try{game.load(data.fen);if(data.pgn){const replay=new Chess();replay.loadPgn(data.pgn); } if(data.clocks)clockSeconds=data.clocks;lastMove=data.lastMove||null;selected=null;legal=[];render();if(game.isGameOver())setStatus(gameOverText());else setStatus("Connected — "+(myColor==="w"?"you are White":"you are Black"))}catch(e){setStatus("Received an invalid game state; ignored.")}}
 function closeNetwork(){try{conn?.close();peer?.destroy()}catch{}conn=null;peer=null;connected=false;roomCode="";$("copyBtn").disabled=true}
 function setupConnection(c,isHost){
  conn=c;
  c.on("open",()=>{
   connected=true;
-  if(isHost){c.send({type:"hello",fen:game.fen(),pgn:game.pgn()});setStatus("Opponent connected — you play White.");}
+  if(isHost){c.send({type:"hello",fen:game.fen(),pgn:game.pgn(),clocks:clockSeconds});setStatus("Opponent connected — you play White.");startClock();}
   else setStatus("Connected — waiting for the host's board.");
   $("copyBtn").disabled=false;
  });
@@ -143,16 +165,24 @@ function setupConnection(c,isHost){
   if(!data||typeof data!=="object")return;
   if(data.type==="hello"&&!isHost){try{game.load(data.fen);myColor="b";role="guest";flipped=true;render();setStatus("Joined successfully — you play Black.");}catch{setStatus("Host sent an invalid board state.")}}
   if(data.type==="move"&&isHost){
-   try{const m=game.move(data.move);if(!m){c.send({type:"error",message:"That move is illegal."});return}lastMove={from:m.from,to:m.to};selected=null;legal=[];broadcastState();render();if(game.isGameOver())setStatus(gameOverText())}catch{c.send({type:"error",message:"Invalid move."})}
+   try{const m=game.move(data.move);if(!m){c.send({type:"error",message:"That move is illegal."});return}lastMove={from:m.from,to:m.to};selected=null;legal=[];broadcastState();render();paintClocks();if(game.isGameOver())endGame(gameOverText())}catch{c.send({type:"error",message:"Invalid move."})}
   }
   if(data.type==="state"&&!isHost)applyRemoteState(data);
   if(data.type==="error")setStatus(data.message||"The other player rejected that move.");
+  if(data.type==="chat")addChat(String(data.text||"").slice(0,300),false);
+  if(data.type==="draw-offer"){drawPending=true;setStatus("Opponent offers a draw.");feature("Draw offer","<p>Your opponent offered a draw.</p><div class='actions'><button class='button primary' id='acceptDraw'>Accept draw</button><button class='button' id='declineDraw'>Decline</button></div>");$("acceptDraw").onclick=()=>{sendPacket({type:"draw-accept"});$("featureModal").classList.remove("show");endGame("Draw agreed.");};$("declineDraw").onclick=()=>{$("featureModal").classList.remove("show");sendPacket({type:"draw-decline"});setStatus("Draw offer declined.");};}
+  if(data.type==="draw-accept")endGame("Draw agreed.");
+  if(data.type==="draw-decline")setStatus("Opponent declined the draw.");
+  if(data.type==="resign")endGame("Opponent resigned — you win!");
+  if(data.type==="timeout")endGame("Opponent ran out of time — you win!");
+  if(data.type==="clock"&&role==="guest"){clockSeconds=data.clocks;paintClocks();}
+
  });
  c.on("close",()=>{connected=false;setStatus("Opponent disconnected.");});
  c.on("error",e=>{console.error(e);setStatus("Connection error: "+(e.message||"could not connect."));});
 }
 $("hostBtn").onclick=()=>{
- closeNetwork();game.reset();lastMove=null;role="host";myColor="w";flipped=false;selected=null;legal=[];render();
+ closeNetwork();game.reset();resetClock();lastMove=null;role="host";myColor="w";flipped=false;selected=null;legal=[];render();
  const code="cl-"+Math.random().toString(36).slice(2,9);
  roomCode=code;$("roomInput").value=code;
  peer=new Peer(code);
@@ -163,7 +193,7 @@ $("hostBtn").onclick=()=>{
 };
 $("joinBtn").onclick=()=>{
  const code=$("roomInput").value.trim();if(!code){setStatus("Enter a room code first.");return}
- closeNetwork();game.reset();lastMove=null;role="guest";myColor="b";flipped=true;selected=null;legal=[];render();
+ closeNetwork();game.reset();resetClock();lastMove=null;role="guest";myColor="b";flipped=true;selected=null;legal=[];render();
  peer=new Peer();
  setStatus("Connecting to "+code+"…");
  peer.on("open",()=>{const c=peer.connect(code,{reliable:true});setupConnection(c,false)});
@@ -171,11 +201,6 @@ $("joinBtn").onclick=()=>{
 };
 $("copyBtn").onclick=async()=>{if(!roomCode)return;try{await navigator.clipboard.writeText(roomCode);setStatus("Invite code copied!")}catch{$("roomInput").select();setStatus("Select and copy the room code.")}};
 $("flipBtn").onclick=()=>{flipped=!flipped;render()};
-$("newBtn").onclick=()=>{closeNetwork();game.reset();role="local";myColor="w";flipped=false;lastMove=null;selected=null;legal=[];render();setStatus("New local game started.")};
+$("newBtn").onclick=()=>{closeNetwork();game.reset();resetClock();role="local";myColor="w";flipped=false;lastMove=null;selected=null;legal=[];render();paintClocks();setStatus("New local game started.")};
 render();
-</script>
-<script>
-document.getElementById('flipBtnAlt').addEventListener('click',()=>document.getElementById('flipBtn').click());
-document.getElementById('newBtnAlt').addEventListener('click',()=>document.getElementById('newBtn').click());
-</script>
-</body></html>
+</script>>
