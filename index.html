@@ -203,4 +203,32 @@ $("copyBtn").onclick=async()=>{if(!roomCode)return;try{await navigator.clipboard
 $("flipBtn").onclick=()=>{flipped=!flipped;render()};
 $("newBtn").onclick=()=>{closeNetwork();game.reset();resetClock();role="local";myColor="w";flipped=false;lastMove=null;selected=null;legal=[];render();paintClocks();setStatus("New local game started.")};
 render();
-</script>>
+
+paintClocks();
+$("drawBtn").onclick=()=>{if(role==="local"){setStatus("Draw offers are available in online matches.");return}sendPacket({type:"draw-offer"});setStatus("Draw offer sent.")};
+$("resignBtn").onclick=()=>{if(!confirm("Resign this game?"))return;sendPacket({type:"resign"});endGame("You resigned.")};
+$("sendChat").onclick=()=>{const value=$("chatInput").value.trim();if(!value)return;addChat(value,true);sendPacket({type:"chat",text:value});$("chatInput").value=""};
+$("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("sendChat").click()});
+$("emojiBtn").onclick=()=>{$("chatInput").value+=" 🙂";$("chatInput").focus()};
+$("firstMove").onclick=()=>goPly(0);$("prevMove").onclick=()=>goPly(viewingPly===null?Math.max(0,game.history().length-1):viewingPly-1);
+$("nextMove").onclick=()=>{const n=viewingPly===null?game.history().length:viewingPly+1;if(n>=game.history().length)returnLive();else goPly(n)};
+$("lastMove").onclick=returnLive;
+$("zoomIn").onclick=()=>{zoomLevel=Math.min(1.35,zoomLevel+.1);$("board").style.transform="scale("+zoomLevel+")"};
+$("zoomOut").onclick=()=>{zoomLevel=Math.max(.7,zoomLevel-.1);$("board").style.transform="scale("+zoomLevel+")"};
+$("fullScreen").onclick=()=>{const target=$(".board-shell");if(!document.fullscreenElement)target.requestFullscreen?.();else document.exitFullscreen?.()};
+$("boardSettings").onclick=()=>feature("Board settings","<p>Choose board colors and display preferences.</p><div class='actions'><button class='button' id='themeClassic'>Classic orange</button><button class='button' id='themeBlue'>Blue</button></div>");
+$("featureContent").addEventListener("click",e=>{if(e.target.id==="themeClassic"){document.documentElement.style.setProperty("--orange","#efa449");document.documentElement.style.setProperty("--cream","#f0edda")}if(e.target.id==="themeBlue"){document.documentElement.style.setProperty("--orange","#7b9acb");document.documentElement.style.setProperty("--cream","#e5eaf2")}});
+$("closeFeature").onclick=()=>$("featureModal").classList.remove("show");
+$("chatInvite").onclick=()=>feature("Invite a friend","<p>Share this room code with your opponent:</p><p><b>"+(roomCode||"Create a room first")+"</b></p>");
+$("chatMenu").onclick=()=>feature("Chat options","<p>Messages are sent directly to your connected opponent.</p>");
+$("friendsBtn").onclick=()=>feature("Friends","<p>Friend lists and live presence need a shared account service. Invite friends using your room code.</p><p class='muted'>Peer connection: "+(connected?"connected":"not connected")+"</p>");
+$("notifyBtn").onclick=()=>feature("Notifications","<p>Match events and draw offers appear here while the game is open.</p>");
+$("profileBtn").onclick=()=>feature("Player profile","<p><b>ChessLink player</b></p><p>Local profile. Global ratings require an account backend.</p>");
+$("searchBtn").onclick=()=>feature("Find a player","<p>Public matchmaking requires a shared matchmaking backend. Join a friend with their invite code.</p>");
+document.querySelectorAll(".navitem").forEach(item=>item.addEventListener("click",()=>{document.querySelectorAll(".navitem").forEach(x=>x.classList.remove("active"));item.classList.add("active");const label=item.textContent.trim();if(label==="Play"){returnLive();return}if(label==="Puzzles")feature("Puzzles","<p>Chess puzzle training is coming next. Start by finding forcing checks, captures and threats.</p>");else if(label==="Learn")feature("Learn chess","<p><b>Castling:</b> move your king two squares toward a rook, then move the rook beside it. Neither piece may have moved, and the king cannot pass through check.</p><p><b>En passant:</b> capture an adjacent pawn immediately after it advances two squares.</p><p><b>Promotion:</b> a pawn reaching the far rank becomes a queen, rook, bishop or knight.</p>");else if(label==="More")feature("More","<p>ChessLink is a peer-to-peer chess app. Tournaments, spectators and analysis need additional shared services.</p>");else if(label==="Settings")$("boardSettings").click()}));
+$("flipBtnAlt").onclick=()=>$("flipBtn").click();$("newBtnAlt").onclick=()=>$("newBtn").click();
+
+
+</script>
+</body>
+</html>
