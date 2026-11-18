@@ -88,6 +88,16 @@ function goPly(ply){const total=game.history().length;viewingPly=Math.max(0,Math
 function returnLive(){viewingPly=null;render();paintClocks()}
 function endGame(message){gameFinished=true;stopClock();setStatus(message);render()}
 
+
+const PROFILE_KEY="chesslink.profile.v1", MATCH_KEY="chesslink.pendingMatches.v1", BOARD_KEY="chesslink.cachedLeaderboard.v1";
+function readProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY))||null}catch{return null}}
+let profile=readProfile()||{id:"p-"+(crypto.randomUUID?.()||Math.random().toString(36).slice(2)),name:"Player"};
+function saveProfile(name){profile.name=(name||"Player").trim().slice(0,24)||"Player";localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));if(conn?.open)conn.send({type:"profile",profile});}
+let opponentProfile=null;
+function htmlSafe(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function getLeaderboard(){try{const res=await fetch("data/leaderboard.json",{cache:"default"});if(!res.ok)throw Error("offline");const data=await res.json();localStorage.setItem(BOARD_KEY,JSON.stringify(data));return data}catch{try{return JSON.parse(localStorage.getItem(BOARD_KEY))}catch{return {players:[]}}}}
+async function showProfile(){const data=await getLeaderboard();const rank=(data.players||[]).findIndex(p=>p.id===profile.id);const rows=(data.players||[]).slice(0,10).map((p,i)=>"<li>"+(i+1)+". "+htmlSafe(p.name)+" — "+p.rating+"</li>").join("");feature("ChessLink · GitHub profile","<p>Your display name is saved on this device. Your public leaderboard entry appears after your profile and match records are accepted into the repository.</p><label>Display name</label><input id='profileName' maxlength='24' value='"+htmlSafe(profile.name)+"' style='width:100%;padding:9px;margin:7px 0;background:#17151e;color:white;border:1px solid #484254;border-radius:7px'><p class='muted'>Player ID: "+htmlSafe(profile.id)+"</p><p>"+(rank>=0?"Global rank: #"+(rank+1)+" · "+data.players[rank].rating+" rating":"Not yet on the public leaderboard")+"</p><button class='button primary' id='saveProfile'>Save name</button><button class='button' id='exportProfile'>Export profile JSON</button><h3>Top players</h3><ol>"+(rows||"<li>No published ratings yet.</li>")+"</ol><p class='muted'>Leaderboard source: this GitHub repository. Last updated: "+htmlSafe(data.generatedAt||"not generated yet")+"</p>");$("saveProfile").onclick=()=>{saveProfile($("profileName").value);showProfile()};$("exportProfile").onclick=()=>downloadJson("chesslink-player.json",{version:1,players:[profile]})}
+function downloadJson(filename,data){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url)}
 function setStatus(msg){$("status").textContent=msg}
 function squareName(file,rank){return files[file]+rank}
 function boardSquares(){
@@ -160,19 +170,19 @@ function setupConnection(c,isHost){
  conn=c;
  c.on("open",()=>{
   connected=true;
-  if(isHost){c.send({type:"hello",fen:game.fen(),pgn:game.pgn(),clocks:clockSeconds});setStatus("Opponent connected — you play White.");startClock();}
+  if(isHost){c.send({type:"hello",fen:game.fen(),pgn:game.pgn(),clocks:clockSeconds,profile});setStatus("Opponent connected — you play White.");startClock();}
   else setStatus("Connected — waiting for the host's board.");
   $("copyBtn").disabled=false;
  });
  c.on("data",data=>{
   if(!data||typeof data!=="object")return;
-  if(data.type==="hello"&&!isHost){try{game.load(data.fen);if(data.clocks)clockSeconds=data.clocks;myColor="b";role="guest";flipped=true;startClock();render();paintClocks();setStatus("Joined successfully — you play Black.");}catch{setStatus("Host sent an invalid board state.")}}
+  if(data.type==="hello"&&!isHost){try{game.load(data.fen);if(data.clocks)clockSeconds=data.clocks;myColor="b";role="guest";flipped=true;startClock();render();paintClocks();setStatus("Joined successfully — you play Black.");conn?.send({type:"profile",profile});}catch{setStatus("Host sent an invalid board state.")}}
   if(data.type==="move"&&isHost){
    try{const m=game.move(data.move);if(!m){c.send({type:"error",message:"That move is illegal."});return}lastMove={from:m.from,to:m.to};selected=null;legal=[];broadcastState();render();paintClocks();if(game.isGameOver())endGame(gameOverText())}catch{c.send({type:"error",message:"Invalid move."})}
   }
   if(data.type==="state"&&!isHost)applyRemoteState(data);
   if(data.type==="error")setStatus(data.message||"The other player rejected that move.");
-  if(data.type==="chat")addChat(String(data.text||"").slice(0,300),false);
+  if(data.type==="chat")addChat(String(data.text||"").slice(0,300),false);\n  if(data.type==="profile"&&data.profile&&typeof data.profile.id==="string"){opponentProfile={id:data.profile.id,name:String(data.profile.name||"Opponent").slice(0,24)};}
   if(data.type==="draw-offer"){drawPending=true;setStatus("Opponent offers a draw.");feature("Draw offer","<p>Your opponent offered a draw.</p><div class='actions'><button class='button primary' id='acceptDraw'>Accept draw</button><button class='button' id='declineDraw'>Decline</button></div>");$("acceptDraw").onclick=()=>{sendPacket({type:"draw-accept"});$("featureModal").classList.remove("show");endGame("Draw agreed.");};$("declineDraw").onclick=()=>{$("featureModal").classList.remove("show");sendPacket({type:"draw-decline"});setStatus("Draw offer declined.");};}
   if(data.type==="draw-accept")endGame("Draw agreed.");
   if(data.type==="draw-decline")setStatus("Opponent declined the draw.");
@@ -218,7 +228,7 @@ $("nextMove").onclick=()=>{const n=viewingPly===null?game.history().length:viewi
 $("lastMove").onclick=returnLive;
 $("zoomIn").onclick=()=>{zoomLevel=Math.min(1.35,zoomLevel+.1);$("board").style.transform="scale("+zoomLevel+")"};
 $("zoomOut").onclick=()=>{zoomLevel=Math.max(.7,zoomLevel-.1);$("board").style.transform="scale("+zoomLevel+")"};
-$("fullScreen").onclick=()=>{const target=$(".board-shell");if(!document.fullscreenElement)target.requestFullscreen?.();else document.exitFullscreen?.()};
+$("fullScreen").onclick=()=>{const target=document.querySelector(".board-shell");if(!document.fullscreenElement)target.requestFullscreen?.();else document.exitFullscreen?.()};
 $("boardSettings").onclick=()=>feature("Board settings","<p>Choose board colors and display preferences.</p><div class='actions'><button class='button' id='themeClassic'>Classic orange</button><button class='button' id='themeBlue'>Blue</button></div>");
 $("featureContent").addEventListener("click",e=>{if(e.target.id==="themeClassic"){document.documentElement.style.setProperty("--orange","#efa449");document.documentElement.style.setProperty("--cream","#f0edda")}if(e.target.id==="themeBlue"){document.documentElement.style.setProperty("--orange","#7b9acb");document.documentElement.style.setProperty("--cream","#e5eaf2")}});
 $("closeFeature").onclick=()=>$("featureModal").classList.remove("show");
@@ -226,10 +236,12 @@ $("chatInvite").onclick=()=>feature("Invite a friend","<p>Share this room code w
 $("chatMenu").onclick=()=>feature("Chat options","<p>Messages are sent directly to your connected opponent.</p>");
 $("friendsBtn").onclick=()=>feature("Friends","<p>Friend lists and live presence need a shared account service. Invite friends using your room code.</p><p class='muted'>Peer connection: "+(connected?"connected":"not connected")+"</p>");
 $("notifyBtn").onclick=()=>feature("Notifications","<p>Match events and draw offers appear here while the game is open.</p>");
-$("profileBtn").onclick=()=>feature("Player profile","<p><b>ChessLink player</b></p><p>Local profile. Global ratings require an account backend.</p>");
-$("searchBtn").onclick=()=>feature("Find a player","<p>Public matchmaking requires a shared matchmaking backend. Join a friend with their invite code.</p>");
-document.querySelectorAll(".navitem").forEach(item=>item.addEventListener("click",()=>{document.querySelectorAll(".navitem").forEach(x=>x.classList.remove("active"));item.classList.add("active");const label=item.textContent.trim();if(label==="Play"){returnLive();return}if(label==="Puzzles")feature("Puzzles","<p>Chess puzzle training is coming next. Start by finding forcing checks, captures and threats.</p>");else if(label==="Learn")feature("Learn chess","<p><b>Castling:</b> move your king two squares toward a rook, then move the rook beside it. Neither piece may have moved, and the king cannot pass through check.</p><p><b>En passant:</b> capture an adjacent pawn immediately after it advances two squares.</p><p><b>Promotion:</b> a pawn reaching the far rank becomes a queen, rook, bishop or knight.</p>");else if(label==="More")feature("More","<p>ChessLink is a peer-to-peer chess app. Tournaments, spectators and analysis need additional shared services.</p>");else if(label==="Settings")$("boardSettings").click()}));
-$("flipBtnAlt").onclick=()=>$("flipBtn").click();$("newBtnAlt").onclick=()=>$("newBtn").click();
+$("profileBtn").onclick=()=>showProfile();
+$("searchBtn").onclick=async()=>{const data=await getLeaderboard();const rows=(data.players||[]).slice(0,20).map((p,i)=>"<li>"+(i+1)+". "+htmlSafe(p.name)+" — "+p.rating+"</li>").join("");feature("Public leaderboard","<p>Read from the ChessLink GitHub repository.</p><ol>"+(rows||"<li>No ranked players yet.</li>")+"</ol><p class=muted>Matchmaking still uses invite codes; this list is not a live queue.</p>")};
+document.querySelectorAll(".navitem").forEach(item=>item.addEventListener("click",()=>{document.querySelectorAll(".navitem").forEach(x=>x.classList.remove("active"));item.classList.add("active");const label=item.textContent.trim();if(label==="Play"){returnLive();return}if(label==="Puzzles")feature("Puzzles","<p>Chess puzzle training is coming next. Start by finding forcing checks, captures and threats.</p>");else if(label==="Learn")feature("Learn chess","<p><b>Castling:</b> move your king two squares toward a rook, then move the rook beside it. Neither piece may have moved, and the king cannot pass through check.</p><p><b>En passant:</b> capture an adjacent pawn immediately after it advances two squares.</p><p><b>Promotion:</b> a pawn reaching the far rank becomes a queen, rook, bishop or knight.</p>");else if(label==="More")feature("More","<p>GitHub hosts the public player data, match ledger and generated leaderboard. Live moves and chat stay peer-to-peer.</p><button class=button id=moreLeaderboard>Open leaderboard</button><button class=button id=exportMatches>Export pending match records</button>");else if(label==="Settings")$("boardSettings").click()}));
+
+$("featureContent").addEventListener("click",e=>{if(e.target.id==="moreLeaderboard")$("searchBtn").click();if(e.target.id==="exportMatches"){let pending=[];try{pending=JSON.parse(localStorage.getItem(MATCH_KEY)||"[]")}catch{}downloadJson("chesslink-match-submission.json",{version:1,matches:pending});}});
+\n$("flipBtnAlt").onclick=()=>$("flipBtn").click();$("newBtnAlt").onclick=()=>$("newBtn").click();
 
 
 </script>
