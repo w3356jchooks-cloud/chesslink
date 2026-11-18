@@ -77,7 +77,7 @@ let clockSeconds={w:180,b:180}, clockStarted=false, clockHandle=null, viewingPly
 let zoomLevel=1, drawPending=false, gameFinished=false;
 function clockText(n){n=Math.max(0,n);return String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0")}
 function paintClocks(){ $("whiteClock").textContent=clockText(clockSeconds.w); $("blackClock").textContent=clockText(clockSeconds.b); $("whiteClock").style.opacity=game.turn()==="w"?"1":".65"; $("blackClock").style.opacity=game.turn()==="b"?"1":".65"; }
-function startClock(){if(clockStarted)return;clockStarted=true;clockHandle=setInterval(()=>{if(gameFinished||game.isGameOver())return;const c=game.turn();clockSeconds[c]=Math.max(0,clockSeconds[c]-1);paintClocks();if(clockSeconds[c]===0){gameFinished=true;setStatus((c==="w"?"White":"Black")+" ran out of time — "+(c==="w"?"Black":"White")+" wins.");if(conn?.open)conn.send({type:"timeout",loser:c});}},1000)}
+function startClock(){if(clockStarted)return;clockStarted=true;clockHandle=setInterval(()=>{if(gameFinished||game.isGameOver())return;const c=game.turn();clockSeconds[c]=Math.max(0,clockSeconds[c]-1);paintClocks();if(clockSeconds[c]===0){gameFinished=true;setStatus((c==="w"?"White":"Black")+" ran out of time — "+(c==="w"?"Black":"White")+" wins.");if(conn?.open)conn.send({type:"timeout",loser:c});endGame("You ran out of time — "+(c==="w"?"Black":"White")+" wins.");}},1000)}
 function stopClock(){if(clockHandle)clearInterval(clockHandle);clockHandle=null;clockStarted=false}
 function resetClock(){stopClock();clockSeconds={w:180,b:180};gameFinished=false;paintClocks()}
 function sendPacket(packet){if(conn?.open)conn.send(packet)}
@@ -86,7 +86,23 @@ function feature(title,body){$("featureContent").innerHTML="<h2>"+title+"</h2>"+
 function replayAt(ply){const temp=new Chess();const history=game.history({verbose:true});for(let i=0;i<Math.min(ply,history.length);i++)temp.move(history[i]);return temp}
 function goPly(ply){const total=game.history().length;viewingPly=Math.max(0,Math.min(total,ply));const temp=replayAt(viewingPly);const board=$("board");board.innerHTML="";const ranks=flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1],cols=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];for(const rank of ranks)for(const file of cols){const sq="abcdefgh"[file]+rank,piece=temp.get(sq),b=document.createElement("button");b.className="sq "+(((file+rank)%2===0)?"light":"dark");if(piece){const span=document.createElement("span");span.className="piece";span.textContent=glyph[piece.color+piece.type];b.append(span)}b.disabled=true;board.append(b)}$("turnLabel").textContent=ply===total?"Live position":"Reviewing move "+ply+" / "+total;setStatus(ply===total?"Back to live game.":"Move review — return to latest to play.");}
 function returnLive(){viewingPly=null;render();paintClocks()}
-function endGame(message){gameFinished=true;stopClock();setStatus(message);render()}
+function endGame(message){gameFinished=true;stopClock();setStatus(message);render();recordFinishedMatch(message)}
+function recordFinishedMatch(message){
+ if(role==="local"||!opponentProfile)return;
+ let result=null;
+ if(game.isCheckmate()){result=game.turn()==="w"?"0-1":"1-0"}
+ else if(game.isDraw()||/draw agreed|draw/i.test(message)){result="1/2-1/2"}
+ else if(/White wins/i.test(message))result="1-0";
+ else if(/Black wins/i.test(message))result="0-1";
+ else if(/You resigned|You ran out of time/i.test(message))result=myColor==="w"?"0-1":"1-0";
+ else if(/Opponent resigned|Opponent ran out of time/i.test(message))result=myColor==="w"?"1-0":"0-1";
+ if(!result)return;
+ const white=role==="host"?profile:opponentProfile, black=role==="guest"?profile:opponentProfile;
+ let list=[];try{list=JSON.parse(localStorage.getItem(MATCH_KEY)||"[]")}catch{}
+ const id="m-"+(crypto.randomUUID?.()||Date.now().toString(36));
+ list.push({id,whiteId:white.id,blackId:black.id,result,completedAt:new Date().toISOString(),pgn:game.pgn()});
+ localStorage.setItem(MATCH_KEY,JSON.stringify(list));
+}
 
 
 const PROFILE_KEY="chesslink.profile.v1", MATCH_KEY="chesslink.pendingMatches.v1", BOARD_KEY="chesslink.cachedLeaderboard.v1";
@@ -176,7 +192,7 @@ function setupConnection(c,isHost){
  });
  c.on("data",data=>{
   if(!data||typeof data!=="object")return;
-  if(data.type==="hello"&&!isHost){try{game.load(data.fen);if(data.clocks)clockSeconds=data.clocks;myColor="b";role="guest";flipped=true;startClock();render();paintClocks();setStatus("Joined successfully — you play Black.");conn?.send({type:"profile",profile});}catch{setStatus("Host sent an invalid board state.")}}
+  if(data.type==="hello"&&!isHost){try{opponentProfile=data.profile||null;game.load(data.fen);if(data.clocks)clockSeconds=data.clocks;myColor="b";role="guest";flipped=true;startClock();render();paintClocks();setStatus("Joined successfully — you play Black.");conn?.send({type:"profile",profile});}catch{setStatus("Host sent an invalid board state.")}}
   if(data.type==="move"&&isHost){
    try{const m=game.move(data.move);if(!m){c.send({type:"error",message:"That move is illegal."});return}lastMove={from:m.from,to:m.to};selected=null;legal=[];broadcastState();render();paintClocks();if(game.isGameOver())endGame(gameOverText())}catch{c.send({type:"error",message:"Invalid move."})}
   }
